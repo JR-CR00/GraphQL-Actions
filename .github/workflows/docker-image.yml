@@ -12,34 +12,40 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
-
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
+    - name: Git Semantic Version
+      uses: paulhatch/semantic-version@v4.0.2
+      with:
+        major_pattern: "major"
+        minor_pattern: "feat:"
+        format: "${major}.${minor}.${patch}-prerelease${increment}"
+      id: version
     - name: Docker Login
       env: 
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: | 
-        echo "Login"
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-        echo "Login Succedeed"
-    - name: Build Image
-      env:
+        NEW_VERSION: ${{ steps.version.outputs.version }}
         DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
-      run: |
-        echo "$DOCKER_CONTAINER"
-        docker build -t $DOCKER_CONTAINER:0.0.3 .
-        docker build -t $DOCKER_CONTAINER:latest .
+      run: | 
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        echo "New Version: $NEW_VERSION"
+    # - name: Build Image
+    #   env:
+    #     DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
+    #   run: |
+    #     echo "$DOCKER_CONTAINER"
+    #     docker build -t $DOCKER_CONTAINER:0.0.3 .
+    #     docker build -t $DOCKER_CONTAINER:latest .
         
-    - name: Push Image
-      run: |
-        docker push $DOCKER_CONTAINER:0.0.3
-        docker push $DOCKER_CONTAINER:latest
+    # - name: Push Image
+    #   run: |
+    #     docker push $DOCKER_CONTAINER:0.0.3
+    #     docker push $DOCKER_CONTAINER:latest
         
         
     #- name: Build the Docker image
