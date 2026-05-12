@@ -26,6 +26,14 @@ jobs:
         echo "Login"
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         echo "Login Succedeed"
+    - name: Build Docker Image
+      env:
+        DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
+      run: |
+        docker build -t $DOCKER_CONTAINER:0.0.2 .
+    - name: Push Docker Image
+      run: | 
+        docker push $DOCKER_CONTAINER:0.0.2 .
         
         
     #- name: Build the Docker image
