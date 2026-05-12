@@ -7,48 +7,34 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        filter: blob:none
+        # ❌ Eliminado: filter: blob:none
 
     - name: Git Semantic Version
-      uses: paulhatch/semantic-version@v4.0.2
+      uses: paulhatch/semantic-version@v5.4.0  # ✅ Versión actualizada
       with:
+        tag_prefix: "v"
         major_pattern: "major"
         minor_pattern: "feat:"
-        format: "${major}.${minor}.${patch}-prerelease${increment}"
+        version_format: "${major}.${minor}.${patch}-prerelease${increment}"  # ✅ version_format en v5
         bump_each_commit: true
-        version_from_branch: true
+        version_from_branch: false  # ✅ Usar commits, no el nombre del branch
       id: version
-    - name: Docker Login
-      env: 
+
+    - name: Docker Login & Build
+      env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         NEW_VERSION: ${{ steps.version.outputs.version }}
         DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
-      run: | 
+      run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         echo "New Version: $NEW_VERSION"
-    # - name: Build Image
-    #   env:
-    #     DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
-    #   run: |
-    #     echo "$DOCKER_CONTAINER"
-    #     docker build -t $DOCKER_CONTAINER:0.0.3 .
-    #     docker build -t $DOCKER_CONTAINER:latest .
-        
-    # - name: Push Image
-    #   run: |
-    #     docker push $DOCKER_CONTAINER:0.0.3
-    #     docker push $DOCKER_CONTAINER:latest
-        
-        
-    #- name: Build the Docker image
-    #  run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+        # docker build -t $DOCKER_CONTAINER:$NEW_VERSION .
+        # docker push $DOCKER_CONTAINER:$NEW_VERSION
