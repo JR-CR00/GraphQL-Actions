@@ -36,11 +36,11 @@ jobs:
 
     - name: Build Image
       run: |
-        docker build -t $DOCKER_CONTAINER:$NEW_VERSION .
-        docker build -t $DOCKER_CONTAINER:latest .
+        docker build -t "$DOCKER_CONTAINER:$NEW_VERSION" .
+        docker build -t "$DOCKER_CONTAINER:latest" .
         
     - name: Push Image
       run: |
-        docker push $DOCKER_CONTAINER:$NEW_VERSION
-        docker push $DOCKER_CONTAINER:latest
+        docker push "$DOCKER_CONTAINER:$NEW_VERSION"
+        docker push "$DOCKER_CONTAINER:latest"
         
