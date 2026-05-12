@@ -11,6 +11,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
 
     steps:
     - name: Checkout Code
@@ -31,10 +33,12 @@ jobs:
         DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
       run: |
         echo "$DOCKER_CONTAINER"
-        docker build -t jrvargas/docker-graphql:0.0.3 .
+        docker build -t $DOCKER_CONTAINER:0.0.3 .
     - name: Push Image
       run: |
-        docker push jrvargas/docker-graphql:0.0.3
+        docker push $DOCKER_CONTAINER:0.0.3
+        docker push $DOCKER_CONTAINER:latest
+        
         
     #- name: Build the Docker image
     #  run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
