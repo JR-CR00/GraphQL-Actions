@@ -26,12 +26,16 @@ jobs:
         echo "Login"
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         echo "Login Succedeed"
-    - name: Build & Push Docker Image
+    - name: Build Image
       env:
         DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
       run: |
         echo $DOCKER_CONTAINER
-        docker build -t jrvargas/docker-graphql:0.0.2 --push .
+        docker build -t jrvargas/docker-graphql:0.0.2 
+    - name: Push Image
+      run: |
+        docker push jrvargas/docker-graphql:0.0.2 
+    
         
     #- name: Build the Docker image
     #  run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
