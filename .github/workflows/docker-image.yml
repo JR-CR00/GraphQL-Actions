@@ -75,6 +75,9 @@ jobs:
     needs: build-image
     runs-on: self-hosted
     steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
     - name: Docker Login 
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
