@@ -33,6 +33,8 @@ jobs:
   build-image:
     needs: CI
     runs-on: self-hosted
+    outputs:                                           # ← mismo nivel que "needs" y "runs-on"
+      version: ${{ steps.version.outputs.version }} 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
