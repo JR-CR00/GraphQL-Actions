@@ -1,0 +1,14 @@
+services:
+  graphql-app:
+    container_name: graphql-app
+    image: ${DOCKER_CONTAINER}:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"      # ← para acceder a la app
+    networks:
+      - proxy-network    # ← para que Nginx pueda hablarle
+
+networks:
+  proxy-network:
+    name: proxy-network
+    driver: bridge

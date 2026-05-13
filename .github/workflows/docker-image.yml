@@ -82,22 +82,12 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
-    - name: Pull Image
+    - name: Deploy
+      env:
+        DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
       run: |
-          docker pull ${{ vars.DOCKER_CONTAINER }}:latest
-    
-    - name: Stop and Remove Old Container
-      run: |
-        docker stop graphql-app || true
-        docker rm graphql-app || true
-
-    - name: Run New Container
-      run: |
-        docker run -d \
-          --name graphql-app \
-          --restart unless-stopped \
-          -p 3000:3000 \
-          ${{ vars.DOCKER_CONTAINER }}:latest
+        docker compose pull
+        docker compose up -d --remove-orphans
 
     - name: Docker Logout
       run: docker logout 
