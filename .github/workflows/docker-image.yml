@@ -85,6 +85,7 @@ jobs:
     - name: Deploy
       env:
         DOCKER_CONTAINER: ${{ vars.DOCKER_CONTAINER }}
+        NEW_VERSION: ${{ needs.build-image.outputs.version }}
       run: |
         docker compose pull
         docker compose up -d --remove-orphans

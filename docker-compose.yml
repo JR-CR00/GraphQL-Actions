@@ -1,7 +1,7 @@
 services:
   graphql-app:
     container_name: graphql-app
-    image: ${DOCKER_CONTAINER}:latest
+    image: ${DOCKER_CONTAINER}:${NEW_VERSION}
     restart: unless-stopped
     ports:
       - "3000:3000"      # ← para acceder a la app
