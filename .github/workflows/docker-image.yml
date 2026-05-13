@@ -26,7 +26,7 @@ jobs:
       run: yarn install --frozen-lockfile
 
     - name: Run Tests
-      run: yarn  test
+      run: yarn  test:e2e
     
     - name: Build Application
       run: yarn build
@@ -43,7 +43,7 @@ jobs:
       uses: paulhatch/semantic-version@v5.4.0  
       with:
         tag_prefix: "v"
-        major_pattern: "major"
+        major_pattern: "major:"
         minor_pattern: "feat:"
         version_format: "${major}.${minor}.${patch}-prerelease${increment}"  
         bump_each_commit: true
