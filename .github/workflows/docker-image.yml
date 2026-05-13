@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-image:
     runs-on: self-hosted
     steps:
     - name: Checkout Code
@@ -46,4 +46,34 @@ jobs:
       run: |
         docker push "$DOCKER_CONTAINER:$NEW_VERSION"
         docker push "$DOCKER_CONTAINER:latest"
-        
+  
+  deploy-image:
+    needs: build-image
+    runs-on: self-hosted
+    steps:
+    - name: Docker Login 
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+    - name: Pull Image
+      run: |
+          docker pull ${{ vars.DOCKER_CONTAINER }}:latest
+    
+    - name: Stop and Remove Old Container
+      run: |
+        docker stop graphql-app || true
+        docker rm graphql-app || true
+
+    - name: Run New Container
+      run: |
+        docker run -d \
+          --name graphql-app \
+          --restart unless-stopped \
+          -p 3000:3000 \
+          ${{ vars.DOCKER_CONTAINER }}:latest
+
+    - name: Docker Logout
+      run: docker logout 
