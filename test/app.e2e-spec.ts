@@ -23,7 +23,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(200)
       .expect((res) => {
-        expect(res.body.data.hello).toBe('Hola Mundo desde GraphQL v2');
+        expect(res.body.data.hello).toBe('Hola Mundo desde GraphQL v3');
       });
   });
 });
